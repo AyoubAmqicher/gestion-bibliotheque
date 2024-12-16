@@ -1,16 +1,16 @@
-package com.library.test;
+package com.library;
 
 import com.library.dao.BookDAO;
-import com.library.dao.BorrowDAO;
 import com.library.dao.StudentDAO;
+import com.library.dao.BorrowDAO;
 import com.library.model.Book;
-import com.library.model.Borrow;
 import com.library.model.Student;
+import com.library.model.Borrow;
 import com.library.service.BorrowService;
 import com.library.util.DbConnection;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-
 import java.sql.Connection;
 import java.util.Date;
 import java.util.List;
@@ -94,5 +94,19 @@ class BorrowServiceTest {
         Borrow returnedBorrow = borrowService.getBorrow(borrow.getId());
         assertNotNull(returnedBorrow, "L'emprunt devrait toujours exister");
         assertNotNull(returnedBorrow.getReturnDate(), "La date de retour devrait être définie");
+    }
+
+    @AfterEach
+    void tearDown() {
+        try {
+            if (connection != null) {
+                connection.createStatement().execute("DELETE FROM borrows");
+                connection.createStatement().execute("DELETE FROM books");
+                connection.createStatement().execute("DELETE FROM students");
+                connection.close();
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur lors du nettoyage : " + e.getMessage());
+        }
     }
 }

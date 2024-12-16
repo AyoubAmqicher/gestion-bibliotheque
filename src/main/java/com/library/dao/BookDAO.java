@@ -20,21 +20,29 @@ public class BookDAO {
     public void add(Book book) {
         String sql = "INSERT INTO books (title, author, isbn, published_year) VALUES (?, ?, ?, ?)";
         try (Connection connection = DbConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-             
+             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
             statement.setString(1, book.getTitle());
             statement.setString(2, book.getAuthor());
             statement.setString(3, book.getIsbn());
             statement.setInt(4, book.getPublishedYear());
-            
+
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
                 System.out.println("Livre inséré avec succès !");
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        book.setId(generatedKeys.getInt(1)); // Set the generated ID to the Book object
+                    } else {
+                        throw new SQLException("Échec de l'obtention de l'ID généré.");
+                    }
+                }
             }
         } catch (SQLException e) {
             System.err.println("Erreur lors de l'ajout du livre : " + e.getMessage());
         }
     }
+
 
     // Récupérer un livre par son ISBN
     public Book getBookByIsbn(String isbn) {

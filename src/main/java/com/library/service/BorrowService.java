@@ -10,8 +10,7 @@ import com.library.model.Borrow;
 import com.library.util.DbConnection;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class BorrowService {
     private StudentDAO studentDAO;
     private Connection connection;
 
-    // Constructeur avec BorrowDAO
+    // Constructeur par défaut
     public BorrowService() {
         try {
             this.connection = DbConnection.getConnection();
@@ -34,48 +33,15 @@ public class BorrowService {
         }
     }
 
+    // Constructeur avec injection des DAOs nécessaires
     public BorrowService(BorrowDAO borrowDAO, BookDAO bookDAO, StudentDAO studentDAO) {
         this.borrowDAO = borrowDAO;
         this.bookDAO = bookDAO;
         this.studentDAO = studentDAO;
     }
 
-    public Borrow getBorrow(int borrowId) {
-        return borrowDAO.getBorrowById(borrowId);
-    }
     // Méthode pour emprunter un livre
-    public void borrowBook(Borrow borrow) {
-        // Sauvegarde de l'emprunt dans la base de données
-        borrowDAO.save(borrow);
-    }
-
-    // Afficher les emprunts (méthode fictive, à adapter)
-    public void displayBorrows() {
-        System.out.println("Liste des emprunts...");
-        // Afficher les emprunts enregistrés (adapté selon votre DAO)
-    }
-
-    public void returnBook(int borrowId) {
-        String sql = "UPDATE borrows SET return_date = ? WHERE id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            // Création de la date actuelle et conversion en java.sql.Date
-            java.util.Date utilDate = new java.util.Date();
-            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
-
-            statement.setDate(1, sqlDate);
-            statement.setInt(2, borrowId);
-
-            int rowsUpdated = statement.executeUpdate();
-            if (rowsUpdated > 0) {
-                System.out.println("Livre retourné avec succès !");
-            } else {
-                System.out.println("Emprunt non trouvé.");
-            }
-        } catch (SQLException e) {
-            System.err.println("Erreur lors du retour du livre : " + e.getMessage());
-        }
-    }
-
+    // Emprunter un livre
     public boolean borrowBook(int studentId, int bookId, Date borrowDate) {
         // Vérifier que l'étudiant existe
         Student student = studentDAO.getStudentById(studentId);
@@ -103,6 +69,55 @@ public class BorrowService {
         }
     }
 
+    // Obtenir un emprunt par son ID
+    public Borrow getBorrow(int borrowId) {
+        return borrowDAO.getBorrowById(borrowId);
+    }
+
+
+
+    // Afficher les emprunts (méthode fictive, à adapter)
+    public void displayBorrows() {
+        List<Borrow> borrows = borrowDAO.getAllBorrows();
+        if (borrows.isEmpty()) {
+            System.out.println("Aucun emprunt enregistré");
+            return;
+        }
+
+        System.out.println("\n=== Liste des emprunts ===");
+        System.out.println("------------------------");
+        for (Borrow borrow : borrows) {
+            // Formater la date d'emprunt
+            String borrowDate = new SimpleDateFormat("dd/MM/yyyy").format(borrow.getBorrowDate());
+
+            // Gérer la date de retour
+            String returnDate = "Non retourné";
+            if (borrow.getReturnDate() != null) {
+                returnDate = new SimpleDateFormat("dd/MM/yyyy").format(borrow.getReturnDate());
+            }
+
+            System.out.printf("ID: %d | Étudiant: %s | Livre: %s | Emprunté le: %s | Retourné le: %s%n",
+                    borrow.getId(),
+                    borrow.getStudent().getName(),
+                    borrow.getBook().getTitle(),
+                    borrowDate,
+                    returnDate
+            );
+        }
+        System.out.println("------------------------");
+        System.out.println("Total: " + borrows.size() + " emprunt(s)\n");
+    }
+    // Obtenir la liste de tous les emprunts
+    public List<Borrow> getAllBorrows() {
+        try {
+            return borrowDAO.getAllBorrows();
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la récupération des emprunts : " + e.getMessage());
+            return null;
+        }
+    }
+
+    // Fermer la connexion
     public void closeConnection() {
         if (connection != null) {
             try {
@@ -113,12 +128,16 @@ public class BorrowService {
         }
     }
 
-    public List<Borrow> getAllBorrows() {
+    // Vérifier si un emprunt existe
+    public boolean borrowExists(int borrowId) {
+        return borrowDAO.getBorrowById(borrowId) != null;
+    }
+
+    public void returnBook(int borrowId) {
         try {
-            return borrowDAO.getAllBorrows();
+            borrowDAO.returnBook(borrowId);
         } catch (Exception e) {
-            System.err.println("Erreur lors de la récupération des emprunts : " + e.getMessage());
-            return null;
+            System.err.println("Erreur lors du retour du livre : " + e.getMessage());
         }
     }
 }

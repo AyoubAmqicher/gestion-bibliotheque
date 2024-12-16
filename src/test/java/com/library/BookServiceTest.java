@@ -1,12 +1,12 @@
-package com.library.test;
+package com.library;
 
 import com.library.dao.BookDAO;
 import com.library.model.Book;
 import com.library.service.BookService;
 import com.library.util.DbConnection;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-
 import java.sql.Connection;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,7 +16,6 @@ class BookServiceTest {
     private BookDAO bookDAO;
     private Connection connection;
 
-
     @BeforeEach
     void setUp() {
         try {
@@ -25,6 +24,18 @@ class BookServiceTest {
             bookService = new BookService(bookDAO);
         } catch (Exception e) {
             fail("Erreur lors de l'initialisation des tests : " + e.getMessage());
+        }
+    }
+
+    @AfterEach
+    void tearDown() {
+        try {
+            if (connection != null) {
+                connection.createStatement().execute("DELETE FROM books");
+                connection.close();
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur lors du nettoyage : " + e.getMessage());
         }
     }
 

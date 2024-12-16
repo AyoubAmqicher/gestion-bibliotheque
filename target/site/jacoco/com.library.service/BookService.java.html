@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BookService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">mon-projet</a> &gt; <a href="index.source.html" class="el_package">com.library.service</a> &gt; <span class="el_source">BookService.java</span></div><h1>BookService.java</h1><pre class="source lang-java linenums">package com.library.service;
+import com.library.dao.BookDAO; // Importation de BookDAO
+import com.library.model.Book;   // Importation de Book
+import com.library.util.DbConnection;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+
+
+public class BookService {
+    private BookDAO bookDAO;  // Utilisation de DAO pour la gestion des livres
+    private Connection connection;
+
+
+    // Constructeur qui initialise l'objet BookDAO
+<span class="nc" id="L17">    public BookService() {</span>
+        try {
+<span class="nc" id="L19">            this.connection = DbConnection.getConnection();</span>
+<span class="nc bnc" id="L20" title="All 2 branches missed.">            if (this.connection == null) {</span>
+<span class="nc" id="L21">                throw new SQLException(&quot;Impossible d'établir la connexion à la base de données&quot;);</span>
+            }
+<span class="nc" id="L23">            this.bookDAO = new BookDAO(this.connection);</span>
+<span class="nc bnc" id="L24" title="All 2 branches missed.">            if (this.bookDAO == null) {</span>
+<span class="nc" id="L25">                throw new IllegalStateException(&quot;BookDAO n'a pas été initialisé correctement&quot;);</span>
+            }
+<span class="nc" id="L27">        } catch (Exception e) {</span>
+<span class="nc" id="L28">            System.err.println(&quot;Erreur critique lors de l'initialisation du service de livres : &quot; + e.getMessage());</span>
+            // Vous pourriez vouloir relancer l'exception ici
+<span class="nc" id="L30">            throw new RuntimeException(&quot;Impossible d'initialiser le service de livres&quot;, e);</span>
+<span class="nc" id="L31">        }</span>
+<span class="nc" id="L32">    }</span>
+
+<span class="fc" id="L34">    public BookService(BookDAO bookDAO) {</span>
+<span class="fc" id="L35">        this.bookDAO = bookDAO;</span>
+<span class="fc" id="L36">    }</span>
+
+    // Ajouter un livre
+    public void addBook(Book book) {
+<span class="fc" id="L40">        bookDAO.add(book);</span>
+<span class="fc" id="L41">    }</span>
+
+    // Afficher tous les livres
+    public void displayBooks() {
+<span class="nc" id="L45">        List&lt;Book&gt; books = bookDAO.getAllBooks();</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        for (Book book : books) {</span>
+<span class="nc" id="L47">            System.out.println(book);</span>
+<span class="nc" id="L48">        }</span>
+<span class="nc" id="L49">    }</span>
+
+    // Trouver un livre par ID
+    public Book findBookById(int id) {
+<span class="fc" id="L53">        return bookDAO.getBookById(id);</span>
+    }
+
+    // Supprimer un livre par ID
+    public void deleteBook(int id) {
+<span class="fc" id="L58">        bookDAO.delete(id);</span>
+<span class="fc" id="L59">    }</span>
+
+    // Mise à jour des informations d'un livre
+    public void updateBook(Book book) {
+<span class="fc" id="L63">        bookDAO.update(book);</span>
+<span class="fc" id="L64">    }</span>
+
+    public void closeConnection() {
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (connection != null) {</span>
+            try {
+<span class="nc" id="L69">                connection.close();</span>
+<span class="nc" id="L70">            } catch (Exception e) {</span>
+<span class="nc" id="L71">                System.err.println(&quot;Erreur lors de la fermeture de la connexion : &quot; + e.getMessage());</span>
+<span class="nc" id="L72">            }</span>
+        }
+<span class="nc" id="L74">    }</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
