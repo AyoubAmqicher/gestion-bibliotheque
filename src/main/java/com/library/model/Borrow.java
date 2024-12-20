@@ -9,7 +9,7 @@ public class Borrow {
     private Date borrowDate;
     private Date returnDate;
 
-    // Constructeur complet
+
     public Borrow(int id, Student student, Book book, Date borrowDate, Date returnDate) {
         this.id = id;
         this.student = student;
