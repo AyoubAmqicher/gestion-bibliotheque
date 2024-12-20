@@ -36,7 +36,7 @@ pipeline {
         stage('SonarCloud Analysis') {
                     steps {
                         withSonarQubeEnv('SonarCloud') {
-                            sh 'mvn sonar:sonar -Dsonar.projectKey=gestion-bibliotheque -Dsonar.organization=Ayoub Amqicher -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=1cce6bb6723b95ebea5012601a12ff4c5446d1ac'
+                            sh 'mvn sonar:sonar -Dsonar.projectKey=gestion-bibliotheque -Dsonar.organization=AyoubAmqicher -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=1cce6bb6723b95ebea5012601a12ff4c5446d1ac'
                         }
                     }
                 }
