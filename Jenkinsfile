@@ -38,9 +38,9 @@ pipeline {
                 withSonarQubeEnv('SonarCloud') {
                     script {
                         if (isUnix()) {
-                            sh 'mvn sonar:sonar -Dsonar.projectKey=gestion-bibliotheque -Dsonar.organization=ayoubamqicher -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=1cce6bb6723b95ebea5012601a12ff4c5446d1ac -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
+                            sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=gestion-bibliotheque -Dsonar.organization=ayoubamqicher -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=1cce6bb6723b95ebea5012601a12ff4c5446d1ac -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml'
                         } else {
-                            bat 'mvn sonar:sonar -Dsonar.projectKey=gestion-bibliotheque -Dsonar.organization=ayoubamqicher -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=1cce6bb6723b95ebea5012601a12ff4c5446d1ac -Dsonar.coverage.jacoco.xmlReportPaths=target\\site\\jacoco\\jacoco.xml'
+                            bat 'mvn clean verify sonar:sonar -Dsonar.projectKey=gestion-bibliotheque -Dsonar.organization=ayoubamqicher -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=1cce6bb6723b95ebea5012601a12ff4c5446d1ac -Dsonar.coverage.jacoco.xmlReportPaths=target\\site\\jacoco\\jacoco.xml'
                         }
                     }
                 }
