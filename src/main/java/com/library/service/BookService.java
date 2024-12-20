@@ -9,7 +9,7 @@ import java.util.List;
 
 
 public class BookService {
-    private BookDAO bookDAO;  // Utilisation de DAO pour la gestion des livres
+    private BookDAO bookDAO;
     private Connection connection;
 
 
