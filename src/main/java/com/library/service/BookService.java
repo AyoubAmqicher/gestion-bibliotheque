@@ -13,7 +13,6 @@ public class BookService {
     private Connection connection;
 
 
-    // Constructeur qui initialise l'objet BookDAO
     public BookService() {
         try {
             this.connection = DbConnection.getConnection();
