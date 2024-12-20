@@ -2,6 +2,7 @@ pipeline {
     agent any
     environment {
         MAVEN_HOME = tool 'Maven' // Ensure 'Maven' is correctly configured in Jenkins
+        SONAR_SCANNER_HOME = tool 'SonarQubeScanner'
     }
     stages {
         stage('Checkout') {

@@ -19,30 +19,24 @@
                     <target>17</target>
                 </configuration>
             </plugin>
-
-            <!-- Ajout du plugin Maven Surefire avec la version compatible -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.1.2</version>  <!-- Version corrigée de Surefire Plugin -->
+                <version>3.1.2</version>
             </plugin>
-
-            <!-- JaCoCo plugin for code coverage -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.10</version>
                 <executions>
-                    <!-- Prepare the JaCoCo agent during the test phase -->
                     <execution>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
-                    <!-- Generate the JaCoCo report during the package phase -->
                     <execution>
                         <id>report</id>
-                        <phase>package</phase>
+                        <phase>verify</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
@@ -75,7 +69,6 @@
         <maven.compiler.release>17</maven.compiler.release>
 
         <!-- JaCoCo configuration to ensure the XML report is generated -->
-        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <dependencies>
