@@ -3,6 +3,9 @@ pipeline {
     environment {
         MAVEN_HOME = tool 'Maven' // Ensure 'Maven' is correctly configured in Jenkins
         SONAR_SCANNER_HOME = tool 'SonarQubeScanner'
+        DB_URL = "jdbc:mysql://localhost:3306/library_db"
+        DB_USER = "root"
+        DB_PASSWORD = ""
     }
     stages {
         stage('Checkout') {
