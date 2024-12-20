@@ -1,28 +1,48 @@
 pipeline {
     agent any
     environment {
-        MAVEN_HOME = tool 'Maven'
+        MAVEN_HOME = tool 'Maven' // Ensure 'Maven' is correctly configured in Jenkins
     }
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/AyoubAmqicher/gestion-bibliotheque.git'
-            }
+                // Checkout with branch specified and credentials added
+                git branch: 'main',
+                    url: 'https://github.com/AyoubAmqicher/gestion-bibliotheque.git'            }
         }
         stage('Build') {
             steps {
-                sh '${MAVEN_HOME}/bin/mvn clean compile'
+                script {
+                    // Use the appropriate command for Windows
+                    if (isUnix()) {
+                        sh '${MAVEN_HOME}/bin/mvn clean compile'
+                    } else {
+                        bat "${MAVEN_HOME}\\bin\\mvn clean compile"
+                    }
+                }
             }
         }
         stage('Test') {
             steps {
-                sh '${MAVEN_HOME}/bin/mvn test'
+                script {
+                    if (isUnix()) {
+                        sh '${MAVEN_HOME}/bin/mvn test'
+                    } else {
+                        bat "${MAVEN_HOME}\\bin\\mvn test"
+                    }
+                }
             }
         }
         stage('Quality Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh '${MAVEN_HOME}/bin/mvn sonar:sonar'
+                    script {
+                        if (isUnix()) {
+                            sh '${MAVEN_HOME}/bin/mvn sonar:sonar'
+                        } else {
+                            bat "${MAVEN_HOME}\\bin\\mvn sonar:sonar"
+                        }
+                    }
                 }
             }
         }
